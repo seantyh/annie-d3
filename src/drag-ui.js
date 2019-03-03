@@ -56,6 +56,7 @@ export class DragView{
     let link_added = this.temp_links[0];        
     link_added.attr("x2", cursor[0])
               .attr("y2", cursor[1]);
+              
   }
 
   linkMode_dragended(d) {        
