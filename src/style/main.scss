@@ -4,3 +4,13 @@
   stroke-width: 2px;
   stroke: orange;
 }
+
+@keyframes tofocus {
+  from { fill: red;}
+  to { fill: blue;}
+}
+.onfocus{  
+  fill: blue;
+  animation-name: tofocus;
+  animation-duration: 3s;
+}

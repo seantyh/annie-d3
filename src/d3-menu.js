@@ -13,7 +13,11 @@ export let init_menu = function(){
     .attr("cy", height-radius*2);
   
     c1.on("click", ()=>{
-      console.log("I am clicked");
-    })
+      console.log(d3.event);
+      let elem = d3.select(d3.event.srcElement);
+      elem.attr("class", "onfocus");
+      elem.transition().attr("transform", "translate(-150,0)");
+
+    });
 
 }

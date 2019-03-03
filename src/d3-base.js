@@ -1,28 +1,14 @@
 import * as d3 from "d3";
+import {DragView} from './drag-ui';
 
 let drag = (simulation) => {
   
-  function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-  
-  function dragged(d) {
-    d.fx = d3.event.x;
-    d.fy = d3.event.y;
-  }
-  
-  function dragended(d) {
-    if (!d3.event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
+  let dv = new DragView(simulation);  
   
   return d3.drag()
-      .on("start", dragstarted)
-      .on("drag", dragged)
-      .on("end", dragended);
+      .on("start", (d)=>dv.dragstarted(d))
+      .on("drag", (d)=>dv.dragged(d))
+      .on("end", (d)=>dv.dragended(d));
 };
 
 let color = d => {  
