@@ -1,14 +1,19 @@
 import * as d3 from "d3";
 import {DragView} from './drag-ui';
 
-let drag = (simulation) => {
+let setup_drag_view = (node, simulation) => {
   
   let dv = new DragView(simulation);  
-  
-  return d3.drag()
-      .on("start", (d)=>dv.dragstarted(d))
-      .on("drag", (d)=>dv.dragged(d))
-      .on("end", (d)=>dv.dragended(d));
+  let d3_drag_behavior = d3.drag()
+    .on("start", (d)=>dv.dragstarted(d))
+    .on("drag", (d)=>dv.dragged(d))
+    .on("end", (d)=>dv.dragended(d))
+
+  // install drag behavior
+  node.call(d3_drag_behavior);
+
+  node.on("mouseenter", (d)=>dv.mouseenter(d))
+      .on("mouseleave", (d)=>dv.mouseout(d));
 };
 
 let color = d => {  
@@ -51,9 +56,10 @@ let chart = (data)=>{
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", 5)
-    .attr("fill", color)
-    .call(drag(simulation));
+    .attr("r", 10)
+    .attr("fill", color);
+  
+  setup_drag_view(node, simulation);
   
   node.append("title")
       .text((d) => d.id);

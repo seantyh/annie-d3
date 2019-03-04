@@ -5,9 +5,12 @@ export class DragView{
     this.simulation = simulation;
     this.drag_mode = "link" // "drag"|"link"
     this.temp_links = [];
+    this.in_drag = false;
+    this.drop_element = null;
   }
 
   dragstarted(d) {
+    this.in_drag = true;
     if (this.drag_mode == "drag"){
       this.dragMode_dragstarted(d);
     } else if (this.drag_mode == "link"){
@@ -18,6 +21,7 @@ export class DragView{
   }
 
   dragged(d) {
+    console.log("dragged");
     if (this.drag_mode == "drag"){
       this.dragMode_dragged(d);
     } else if (this.drag_mode == "link"){
@@ -28,6 +32,7 @@ export class DragView{
   }
 
   dragended(d) {
+    this.in_drag = false;
     if (this.drag_mode == "drag"){
       this.dragMode_dragended(d);
     } else if (this.drag_mode == "link"){
@@ -35,6 +40,34 @@ export class DragView{
     } else {
       //pass
     }
+  }
+
+  mouseenter(d){
+    if (!this.in_drag) {
+      return;
+    }
+
+    if (this.drag_mode == "link"){
+      this.linkMode_mouseenter(d);
+    } else {
+      //pass
+    }
+
+    this.drop_element = d3.event.target;
+  }
+
+  mouseout(d){
+    if (!this.in_drag) {
+      return;
+    }
+
+    if (this.drag_mode == "link"){
+      this.linkMode_mouseout(d);
+    } else {
+      //pass
+    }
+
+    this.drop_element = null;
   }
 
   linkMode_dragstarted(d) {    
@@ -46,6 +79,7 @@ export class DragView{
         .attr("y2", d.y)
         .attr("stroke-width", 3)
         .attr("stroke", "black")
+        .attr("pointer-events", "none");
     this.temp_links.push(link_added);
     
   }
@@ -62,6 +96,18 @@ export class DragView{
   linkMode_dragended(d) {        
     let link_added = this.temp_links.pop();
     link_added.remove();
+    d3.select(this.drop_element).classed("node-focus", false);
+    console.log(this.drop_element);
+  }
+
+  linkMode_mouseenter(d){
+    d3.select(d3.event.target)
+      .classed("node-focus", true);
+  }
+
+  linkMode_mouseout(d){
+    d3.select(d3.event.target)
+      .classed("node-focus", false);
   }
 
   dragMode_dragstarted(d) {    
